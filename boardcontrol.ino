@@ -77,7 +77,7 @@ void readX(){
       if (position == RIGHT || position == LEFT)position = NONE;
       //Serial.println(50);
     }
-    else if (isBetween(angleX, 60, 72)){
+    else if (isBetween(angleX, 60, 85)){
       //LEFT
       position = LEFT;
       //Serial.println(10);
