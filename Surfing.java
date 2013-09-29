@@ -105,39 +105,39 @@ public class Surfing implements SerialPortEventListener {
 	 */
 	int prevKeyPressVal = 0;
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
-		int changeThreshold = 0;
-		int center_threshold = 5;
+		int center_threshold = 10;
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-				String inputLine=input.readLine();
-				int inputVal = (int) Double.parseDouble(inputLine);
+				String inputLine=null;
+                if (input.ready()) {
+                    inputLine = input.readLine();
+                }
+				Double inputVal = Double.parseDouble(inputLine);
+				System.out.println(inputLine);
 				long curTime = Calendar.getInstance().getTimeInMillis();
 				if (Math.abs(inputVal)<= 90){
-					if (curTime - lastPressTime >= 
-							pulseWidth(Math.abs(inputVal))) {
+					//if (curTime - lastPressTime >= 
+					//		pulseWidth(Math.abs(inputVal))) {
 						lastPressTime = curTime;
 						if (Math.abs(inputVal)<center_threshold){
 							//CENTER
 							robo.keyRelease(KeyEvent.VK_LEFT);
-							
 							robo.keyRelease(KeyEvent.VK_RIGHT);
 						}
 						else if (inputVal>0){
 							robo.keyPress(KeyEvent.VK_RIGHT);
-							wait(5);
-							robo.keyRelease(KeyEvent.VK_RIGHT);
+							//robo.keyRelease(KeyEvent.VK_RIGHT);
 						}
 						else {
 							robo.keyPress(KeyEvent.VK_LEFT);
-							wait(5);
-							robo.keyRelease(KeyEvent.VK_LEFT);
+							//robo.keyRelease(KeyEvent.VK_LEFT);
 						}
 					//System.out.println(inputVal);
-					prevKeyPressVal = inputVal;
-					}
+					//prevKeyPressVal = inputVal;
+					//}
 				}
 			} catch (Exception e) {
-			//	System.err.println(e.toString());
+				System.err.println(e.toString());
 			}
 		}
 		
@@ -150,15 +150,6 @@ public class Surfing implements SerialPortEventListener {
 			return DEFAULT_DELAY;
 		return (int) (1.0 / angle * DEFAULT_DELAY);
 	}
-	
-	 public static void wait (int n){
-		 long t0,t1;
-		 t0=System.currentTimeMillis();
-		 do{
-		     t1=System.currentTimeMillis();
-		 }
-		 while (t1-t0<n);
-	 }
 	
 	public static void main(String[] args) throws Exception {
 		Surfing main = new Surfing();
