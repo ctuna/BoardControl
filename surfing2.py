@@ -1,8 +1,8 @@
 import serial
+import os
 
 LEFT = 0
-MIDDLE = 1
-RIGHT = 2
+RIGHT = 1
 
 def surfing(dir):
     if dir == LEFT:
@@ -25,9 +25,10 @@ def rightArrow():
 ser = serial.Serial('/dev/tty.usbserial-AM01QMOV', 9600)
 while True:
     try:
-        surfing(ser.readline())
+        s = int(ser.readline())
+        surfing(s)
     except KeyboardInterrupt:
         break
-    except:
-        print "fd up"
-        continue
+    #except:
+    #    print "fd up"
+    #    continue

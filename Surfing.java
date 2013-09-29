@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.Calendar;
 import java.util.Enumeration;
 
 
@@ -26,6 +25,8 @@ public class Surfing implements SerialPortEventListener {
 		super();
 		try {
 			robo = new Robot();
+			robo.setAutoDelay(0);
+			robo.setAutoWaitForIdle(true);
 		} catch (AWTException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,8 +44,6 @@ public class Surfing implements SerialPortEventListener {
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
-	private static final int DEFAULT_DELAY = 100; //in milliseconds
-	private long lastPressTime = Calendar.getInstance().getTimeInMillis();
 
 	public void initialize() {
 	
@@ -103,29 +102,26 @@ public class Surfing implements SerialPortEventListener {
 	/**
 	 * Handle an event on the serial port. Read the data and print it.
 	 */
-	int prevKeyPressVal = 0;
 	final int LEFT = 0;
 	final int RIGHT = 1;
 	
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
-		int changeThreshold = 0;
-		int center_threshold = 5;
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				String inputLine=input.readLine();
 				int inputVal = Integer.parseInt(inputLine);
-				//System.out.println(inputLine + ": " + (inputVal == 0) + " equals 0");
-				
 				switch (inputVal){
 					case (LEFT):
-						
 						robo.keyPress(KeyEvent.VK_LEFT);
+						robo.delay(25);
+						robo.keyRelease(KeyEvent.VK_LEFT);
 						break;
 					case (RIGHT):
 						robo.keyPress(KeyEvent.VK_RIGHT);
+						robo.delay(25);
+						robo.keyRelease(KeyEvent.VK_RIGHT);
 						break;
 					default:
-						
 				}
 				
 				}
@@ -137,22 +133,6 @@ public class Surfing implements SerialPortEventListener {
 		// Ignore all the other eventTypes, but you should consider the other ones.
 	}
 
-	private int pulseWidth(int angle) {
-		double a = angle*1.0;
-		if (angle == 0)
-			return DEFAULT_DELAY;
-		return (int) (1.0 / angle * DEFAULT_DELAY);
-	}
-	
-	 public static void wait (int n){
-		 long t0,t1;
-		 t0=System.currentTimeMillis();
-		 do{
-		     t1=System.currentTimeMillis();
-		 }
-		 while (t1-t0<n);
-	 }
-	
 	public static void main(String[] args) throws Exception {
 		Surfing main = new Surfing();
 		
