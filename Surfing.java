@@ -104,40 +104,33 @@ public class Surfing implements SerialPortEventListener {
 	 * Handle an event on the serial port. Read the data and print it.
 	 */
 	int prevKeyPressVal = 0;
+	final int LEFT = 0;
+	final int RIGHT = 1;
+	
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
-		int center_threshold = 10;
+		int changeThreshold = 0;
+		int center_threshold = 5;
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-				String inputLine=null;
-                if (input.ready()) {
-                    inputLine = input.readLine();
-                }
-				Double inputVal = Double.parseDouble(inputLine);
-				System.out.println(inputLine);
-				long curTime = Calendar.getInstance().getTimeInMillis();
-				if (Math.abs(inputVal)<= 90){
-					//if (curTime - lastPressTime >= 
-					//		pulseWidth(Math.abs(inputVal))) {
-						lastPressTime = curTime;
-						if (Math.abs(inputVal)<center_threshold){
-							//CENTER
-							robo.keyRelease(KeyEvent.VK_LEFT);
-							robo.keyRelease(KeyEvent.VK_RIGHT);
-						}
-						else if (inputVal>0){
-							robo.keyPress(KeyEvent.VK_RIGHT);
-							//robo.keyRelease(KeyEvent.VK_RIGHT);
-						}
-						else {
-							robo.keyPress(KeyEvent.VK_LEFT);
-							//robo.keyRelease(KeyEvent.VK_LEFT);
-						}
-					//System.out.println(inputVal);
-					//prevKeyPressVal = inputVal;
-					//}
+				String inputLine=input.readLine();
+				int inputVal = Integer.parseInt(inputLine);
+				//System.out.println(inputLine + ": " + (inputVal == 0) + " equals 0");
+				
+				switch (inputVal){
+					case (LEFT):
+						
+						robo.keyPress(KeyEvent.VK_LEFT);
+						break;
+					case (RIGHT):
+						robo.keyPress(KeyEvent.VK_RIGHT);
+						break;
+					default:
+						
 				}
-			} catch (Exception e) {
-				System.err.println(e.toString());
+				
+				}
+			 catch (Exception e) {
+			//	System.err.println(e.toString());
 			}
 		}
 		
@@ -150,6 +143,15 @@ public class Surfing implements SerialPortEventListener {
 			return DEFAULT_DELAY;
 		return (int) (1.0 / angle * DEFAULT_DELAY);
 	}
+	
+	 public static void wait (int n){
+		 long t0,t1;
+		 t0=System.currentTimeMillis();
+		 do{
+		     t1=System.currentTimeMillis();
+		 }
+		 while (t1-t0<n);
+	 }
 	
 	public static void main(String[] args) throws Exception {
 		Surfing main = new Surfing();
