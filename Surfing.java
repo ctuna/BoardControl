@@ -102,8 +102,12 @@ public class Surfing implements SerialPortEventListener {
 	/**
 	 * Handle an event on the serial port. Read the data and print it.
 	 */
+	// left and right swapped for snowboard and surf
 	final int LEFT = 0;
 	final int RIGHT = 1;
+	final int MIDDLE = 2;
+	final int JUMP = 3;
+	int curPress = -1;
 	
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
@@ -112,15 +116,33 @@ public class Surfing implements SerialPortEventListener {
 				int inputVal = Integer.parseInt(inputLine);
 				switch (inputVal){
 					case (LEFT):
+						if (curPress != KeyEvent.VK_LEFT && curPress != -1) {
+							robo.keyRelease(curPress);
+						}
 						robo.keyPress(KeyEvent.VK_LEFT);
-						robo.delay(25);
-						robo.keyRelease(KeyEvent.VK_LEFT);
+						//robo.delay(25);
+						//robo.keyRelease(KeyEvent.VK_RIGHT);
+						curPress = KeyEvent.VK_LEFT;
 						break;
 					case (RIGHT):
+						if (curPress != KeyEvent.VK_RIGHT && curPress != -1) {
+							robo.keyRelease(curPress);
+						}
 						robo.keyPress(KeyEvent.VK_RIGHT);
-						robo.delay(25);
-						robo.keyRelease(KeyEvent.VK_RIGHT);
+						//robo.delay(25);
+						//robo.keyRelease(KeyEvent.VK_LEFT);
+						curPress = KeyEvent.VK_RIGHT;
 						break;
+					case (MIDDLE):
+						if (curPress != -1) {
+							robo.keyRelease(curPress);
+							curPress = -1;
+						}
+						break;
+					case (JUMP):
+						robo.keyPress(KeyEvent.VK_SPACE);
+						robo.delay(25);
+						robo.keyRelease(KeyEvent.VK_SPACE);
 					default:
 				}
 				
